@@ -32,7 +32,7 @@ public class SimpleController {
                 "-db", databaseName,
                 "-u", userName,
                 "-p", password,
-                "-o", "/output",
+                "-o", "output/schemaspy",
                 "-dp", "ext-lib/mysql-connector-java-8.0.17.jar",
                 "-connprops", String.format("serverTimezone\\=%s", timezone),
                 "-s", databaseName
