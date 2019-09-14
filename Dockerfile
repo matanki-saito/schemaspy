@@ -20,7 +20,7 @@ LABEL GIT_REVISION=$GIT_REVISION
 
 ADD docker/open-sans.tar.gz /usr/share/fonts/
 
-RUN adduser java -h / -D && \
+RUN adduser -S java -h / -D -G root && \
     set -x && \
     apk add --no-cache curl unzip graphviz fontconfig && \
     fc-cache -fv && \
