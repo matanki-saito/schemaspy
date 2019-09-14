@@ -24,7 +24,8 @@ public class SimpleController {
             @RequestParam(value = "database") String databaseName,
             @RequestParam(value = "user") String userName,
             @RequestParam(value = "pass") String password,
-            @RequestParam(value = "timezone", required = false, defaultValue = "JST") String timezone
+            @RequestParam(value = "timezone", required = false, defaultValue = "JST") String timezone,
+            @RequestParam(value = "out", required = false, defaultValue = "/output") String outputPath
     ) {
         final String[] args = {
                 "-t", databaseType,
@@ -32,7 +33,7 @@ public class SimpleController {
                 "-db", databaseName,
                 "-u", userName,
                 "-p", password,
-                "-o", "output/schemaspy",
+                "-o", outputPath,
                 "-dp", "ext-lib/mysql-connector-java-8.0.17.jar",
                 "-connprops", String.format("serverTimezone\\=%s", timezone),
                 "-s", databaseName
