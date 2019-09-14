@@ -40,7 +40,7 @@
         <testcontainers-java.version>1.10.1</testcontainers-java.version>
         <testcontainers-junit.version>${testcontainers-java.version}.0.0</testcontainers-junit.version>
 
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
     </properties>
     <issueManagement>
         <url>https://github.com/schemaspy/schemaspy/issues</url>
@@ -53,11 +53,6 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <scm>
-        <url>https://github.com/schemaspy/schemaspy</url>
-        <connection>scm:git:git://github.com/schemaspy/schemaspy.git</connection>
-        <developerConnection>scm:git:git@github.com:schemaspy/schemaspy.git</developerConnection>
-    </scm>
     <developers>
         <developer>
             <id>rafalkasa</id>
@@ -126,6 +121,10 @@
     </dependencyManagement>
     <dependencies>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.github.spullara.mustache.java</groupId>
             <artifactId>compiler</artifactId>
         </dependency>
@@ -156,6 +155,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -233,7 +236,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>6.0.6</version>
+            <version>8.0.17</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -311,7 +314,7 @@
                     <archive>
                         <manifestEntries>
                             <Implementation-Version>${project.version}</Implementation-Version>
-                            <Implementation-Build>${buildNumber}</Implementation-Build>
+                            <Implementation-Build>${git.build.version}</Implementation-Build>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -322,8 +325,8 @@
                 <version>3.6.1</version>
                 <configuration>
                     <fork>true</fork>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -338,6 +341,7 @@
                     </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
@@ -359,6 +363,23 @@
                     </items>
                 </configuration>
             </plugin>
+            -->
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <verbose>true</verbose>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -370,6 +391,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -384,7 +408,8 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.20</version>
                 <configuration>
-                    <classesDirectory>${project.build.directory}/${project.build.finalName}.jar.original</classesDirectory>
+                    <classesDirectory>${project.build.directory}/${project.build.finalName}.jar.original
+                    </classesDirectory>
                     <additionalClasspathElements>
                         <additionalClasspathElement>${basedir}/ext-lib/*</additionalClasspathElement>
                     </additionalClasspathElements>
@@ -400,7 +425,7 @@
                     </excludes>
                     <systemPropertyVariables>
                         <pomImplementationVersion>${project.version}</pomImplementationVersion>
-                        <pomImplementationBuild>${buildNumber}</pomImplementationBuild>
+                        <pomImplementationBuild>${git.build.version}</pomImplementationBuild>
                     </systemPropertyVariables>
                 </configuration>
                 <executions>
@@ -445,10 +470,10 @@
         </profile>
         <profile>
             <id>sonar</id>
-              <properties>
-                  <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-                  <sonar.organization>schemaspy</sonar.organization>
-            </properties>     
+            <properties>
+                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+                <sonar.organization>schemaspy</sonar.organization>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
