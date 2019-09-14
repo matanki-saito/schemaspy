@@ -30,17 +30,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.logging.LogLevel;
 import org.springframework.boot.logging.LoggingSystem;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
 
 @Component
-public class SchemaSpyRunner implements ExitCodeGenerator, AsyncTaskRunner {
+public class SchemaSpyRunner implements ExitCodeGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -122,34 +120,5 @@ public class SchemaSpyRunner implements ExitCodeGenerator, AsyncTaskRunner {
     @Override
     public int getExitCode() {
         return exitCode;
-    }
-
-    @Async
-    @Override
-    public CompletableFuture<String> asyncRun(String... args) {
-        try {
-            commandLineArgumentParser.parse(args);
-        } catch (ParameterException e) {
-            LOGGER.error(e.getLocalizedMessage(), e);
-            exitCode = 1;
-            return CompletableFuture.failedFuture(new IllegalStateException());
-        }
-        if (arguments.isHelpRequired()) {
-            commandLineArgumentParser.printUsage();
-            return CompletableFuture.failedFuture(new IllegalStateException());
-        }
-
-        if (arguments.isDbHelpRequired()) {
-            commandLineArgumentParser.printDatabaseTypesHelp();
-            return CompletableFuture.failedFuture(new IllegalStateException());
-        }
-
-        if (arguments.isDebug()) {
-            enableDebug();
-        }
-
-        runAnalyzer(args);
-
-        return CompletableFuture.completedFuture("success");
     }
 }
