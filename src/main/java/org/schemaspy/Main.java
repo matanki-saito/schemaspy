@@ -25,15 +25,19 @@
  */
 package org.schemaspy;
 
+import lombok.extern.slf4j.Slf4j;
 import org.schemaspy.cli.SchemaSpyRunner;
 import org.schemaspy.logging.StackTraceOmitter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
 
-import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author John Currier
@@ -44,20 +48,23 @@ import java.lang.invoke.MethodHandles;
  * @author Daniel Watt
  * @author Nils Petzaell
  */
+@Slf4j
 @SpringBootApplication
+@EnableAsync
 public class Main {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
     public static void main(String... args) {
-        ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
-        SchemaSpyRunner schemaSpyRunner = context.getBean(SchemaSpyRunner.class);
-        schemaSpyRunner.run(args);
-        if (StackTraceOmitter.hasOmittedStackTrace()) {
-            LOGGER.info("StackTraces have been omitted, use `-debug` when executing SchemaSpy to see them");
+        if (List.of(args).indexOf("-servermode") == -1) {
+            ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
+            SchemaSpyRunner schemaSpyRunner = context.getBean(SchemaSpyRunner.class);
+            schemaSpyRunner.run(args);
+            if (StackTraceOmitter.hasOmittedStackTrace()) {
+                log.info("StackTraces have been omitted, use `-debug` when executing SchemaSpy to see them");
+            }
+            int exitCode = SpringApplication.exit(context, () -> 0);
+            System.exit(exitCode);
+        } else {
+            log.info("Web service mode");
+            SpringApplication.run(Main.class, args);
         }
-        int exitCode = SpringApplication.exit(context, () -> 0);
-        System.exit(exitCode);
     }
-
 }
