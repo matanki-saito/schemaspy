@@ -32,9 +32,9 @@ public class SimpleController {
                 "-db", databaseName,
                 "-u", userName,
                 "-p", password,
-                "-o", "target/somefolder",
+                "-o", "/output",
                 "-dp", "ext-lib/mysql-connector-java-8.0.17.jar",
-                "-connprops", String.format("serverTimezone=\\%s", timezone),
+                "-connprops", String.format("serverTimezone\\=%s", timezone),
                 "-s", databaseName
         };
 
