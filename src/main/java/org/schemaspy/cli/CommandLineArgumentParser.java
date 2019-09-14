@@ -24,6 +24,7 @@ import com.beust.jcommander.IDefaultProvider;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterDescription;
 import com.beust.jcommander.ParameterException;
+import lombok.extern.slf4j.Slf4j;
 import org.schemaspy.Config;
 import org.schemaspy.input.dbms.config.PropertiesResolver;
 import org.schemaspy.util.DbSpecificConfig;
@@ -47,6 +48,7 @@ import java.util.stream.Collectors;
  * @author Daniel Watt
  * @author Nils Petzaell
  */
+@Slf4j
 public class CommandLineArgumentParser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -68,6 +70,11 @@ public class CommandLineArgumentParser {
                 .defaultProvider(defaultProvider)
                 .build();
         jCommander.addObject(arguments);
+
+        if (!jCommander.isParameterOverwritingAllowed()) {
+            log.info("Set allow parameter overwriting");
+            jCommander.setAllowParameterOverwriting(true);
+        }
     }
 
     public CommandLineArguments parse(String... localArgs) {
@@ -84,7 +91,7 @@ public class CommandLineArgumentParser {
                 .stream()
                 .filter(ParameterDescription::isHelp)
                 .collect(Collectors.toList());
-        for(ParameterDescription parameterDescription: helpParameters) {
+        for (ParameterDescription parameterDescription : helpParameters) {
             if (parameterDescription.isAssigned()) {
                 return false;
             }
@@ -99,7 +106,7 @@ public class CommandLineArgumentParser {
         Map<String, ParameterDescription> fieldToParameterDescription = jCommander.getParameters()
                 .stream().collect(Collectors.toMap(
                         parameterDescription -> parameterDescription.getParameterized().getName(),
-                        parameterDescription -> parameterDescription ));
+                        parameterDescription -> parameterDescription));
         for (String field : runtimeRequiredFields) {
             ParameterDescription parameterDescription = fieldToParameterDescription.get(field);
             if (valueIsMissing(parameterDescription)) {
@@ -125,7 +132,7 @@ public class CommandLineArgumentParser {
     private static boolean valueIsMissing(ParameterDescription parameterDescription) {
         Object value = parameterDescription.getParameterized().get(parameterDescription.getObject());
         if (value instanceof String) {
-            return ((String)value).isEmpty();
+            return ((String) value).isEmpty();
         }
         return Objects.isNull(value);
     }
