@@ -4,7 +4,7 @@ CIなどで並列に走らせてるSchemaspyのdockerコンテナに対して、
 
 ## API
 ### [GET] /run
-下記のパラメータをクエリパラメータとして渡せます。詳細はControllerを確認してください。
+対象に対してscheme解析を指示し、その結果を指定ディレクトリに保存します。下記のパラメータをクエリパラメータとして渡せます。非同期処理です。詳細はControllerを確認してください。
 
 - type
 - host
@@ -16,6 +16,16 @@ CIなどで並列に走らせてるSchemaspyのdockerコンテナに対して、
 
 ### [GET] /runnable
 実行可能であればtrueが解析が実行中であればfalseが返却されます。
+
+### [GET] /download
+対象に対してscheme解析を指示し、その結果をzipとしてダウンロードします。下記のパラメータをクエリパラメータとして渡せます。同期処理です。詳細はControllerを確認してください。
+
+- type
+- host
+- database
+- user
+- pass
+- timezone
 
 ## その他の変更点
  - openjdkのイメージからAdoptOpenJDKのイメージに変更しています。
@@ -39,7 +49,8 @@ docker run -v "C:\repo\schemaspy\output:/output" --name hoge -p 8080:8080 -it gn
 http://localhost:8080/run?host=host.docker.internal:3306&database=mydb&user=homu&pass=geso
 ```
 
-"" dockerhub
+## dockerhub
+下記に生成済みのdcoker imageがあります。
 https://cloud.docker.com/u/gnagaoka/repository/docker/gnagaoka/schemaspyweb
 
 
