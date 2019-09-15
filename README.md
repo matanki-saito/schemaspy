@@ -39,3 +39,7 @@ docker run -v "C:\repo\schemaspy\output:/output" --name hoge -p 8080:8080 -it gn
 http://localhost:8080/run?host=host.docker.internal:3306&database=mydb&user=homu&pass=geso
 ```
 
+"" dockerhub
+https://cloud.docker.com/u/gnagaoka/repository/docker/gnagaoka/schemaspyweb
+
+
